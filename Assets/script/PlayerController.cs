@@ -25,7 +25,10 @@ public class PlayerController : MonoBehaviour
     private float knockBackCounter;
 
     public float bounceForce;
-    
+
+    public bool isPaused;
+
+    public bool stopInput;
 
     private void Awake()
     {
@@ -37,71 +40,77 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         theSR = GetComponent<SpriteRenderer>();
         isClimbing = false;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (knockBackCounter <= 0)
+        
+        if (!PauseMenu.instance.isPaused && !stopInput)
         {
-            
-            TheRb.linearVelocity = new Vector2(Speed * Input.GetAxis("Horizontal"), TheRb.linearVelocity.y);
-
-            isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, whatIsGround);
-            if (isGrounded)
+            if (knockBackCounter <= 0)
             {
-                canDoubleJump = true;
-            }
 
-            if (Input.GetButtonDown("Jump"))
-            {
+                TheRb.linearVelocity = new Vector2(Speed * Input.GetAxis("Horizontal"), TheRb.linearVelocity.y);
+
+                isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, whatIsGround);
                 if (isGrounded)
                 {
-                    TheRb.gravityScale = gravity;
-                    TheRb.linearVelocity = new Vector2(TheRb.linearVelocity.x, Jumpforce);
-                    isClimbing = false;
-                    anim.SetBool("isClimbing", false);
-                    AudioManager.instance.PlaySFX(10);
+                    canDoubleJump = true;
                 }
-                else
+
+                if (Input.GetButtonDown("Jump"))
                 {
-                    if (canDoubleJump)
+                    if (isGrounded)
                     {
+                        TheRb.gravityScale = gravity;
                         TheRb.linearVelocity = new Vector2(TheRb.linearVelocity.x, Jumpforce);
-                        canDoubleJump = false;
-                        isJumping = false;
+                        isClimbing = false;
+                        anim.SetBool("isClimbing", false);
                         AudioManager.instance.PlaySFX(10);
                     }
+                    else
+                    {
+                        if (canDoubleJump)
+                        {
+                            TheRb.linearVelocity = new Vector2(TheRb.linearVelocity.x, Jumpforce);
+                            canDoubleJump = false;
+                            isJumping = false;
+                            AudioManager.instance.PlaySFX(10);
+                        }
+                    }
                 }
-            }
-       
-        
 
-            if (TheRb.linearVelocity.x  < 0)
-            {
-                theSR.flipX = true;
-            }
-            else if(TheRb.linearVelocity.x > 0)
-            {
-                theSR.flipX = false;
-            }
-        } else
-        {
-            knockBackCounter -= Time.deltaTime;
-            if(theSR.flipX)
-            {
-                TheRb.linearVelocity = new Vector2(knockBackForce, TheRb.linearVelocity.y);
+
+
+                if (TheRb.linearVelocity.x < 0)
+                {
+                    theSR.flipX = true;
+                }
+                else if (TheRb.linearVelocity.x > 0)
+                {
+                    theSR.flipX = false;
+                }
             }
             else
             {
-                TheRb.linearVelocity = new Vector2(-knockBackForce, TheRb.linearVelocity.y);
+                knockBackCounter -= Time.deltaTime;
+                if (theSR.flipX)
+                {
+                    TheRb.linearVelocity = new Vector2(knockBackForce, TheRb.linearVelocity.y);
+                }
+                else
+                {
+                    TheRb.linearVelocity = new Vector2(-knockBackForce, TheRb.linearVelocity.y);
+                }
             }
-        }
-           
-        if(isClimbing)
-        {
-            TheRb.linearVelocity = new Vector2(TheRb.linearVelocity.x, Speed * Input.GetAxis("Vertical"));
-           
+
+            if (isClimbing)
+            {
+                TheRb.linearVelocity = new Vector2(TheRb.linearVelocity.x, Speed * Input.GetAxis("Vertical"));
+
+            }
         }
         anim.SetFloat("Speed", Mathf.Abs(TheRb.linearVelocity.x));
         anim.SetBool("isGrounded", isGrounded);
