@@ -7,7 +7,8 @@ public class AudioManager : MonoBehaviour
     public AudioSource[] soundEffect;
 
     public AudioSource bgm, levelEndMusic;
-
+      
+    //test
     private void Awake()
     {
         instance = this;
