@@ -3,7 +3,7 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     public SpriteRenderer theSr;
-    public Sprite cpOn, cpOff;
+    public Sprite cpOn, cpOff;                                                                   
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

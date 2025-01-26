@@ -11,6 +11,10 @@ public class LSUIController : MonoBehaviour
     public float speedFade;
     private bool shouldFadeToBlack, shouldFadeFromBlack;
 
+    public GameObject levelInfoPanel;
+
+    public TextMeshProUGUI levelName;
+
     private void Awake()
     {
         instance = this;
@@ -52,4 +56,24 @@ public class LSUIController : MonoBehaviour
         shouldFadeToBlack = false;
         shouldFadeFromBlack = true;
     }
+
+    public void ShowInfo(LevelSelect levelSelectInfo)
+    {
+        if (levelSelectInfo.isLocked)
+        {
+            levelName.text = "LOCKED";
+        }
+        else
+        {
+            levelName.text = levelSelectInfo.levelName;
+        }
+        
+        levelInfoPanel.SetActive(true);
+    }
+
+    public void HideInfo()
+    {
+        levelInfoPanel?.SetActive(false);
+    }
 }
+

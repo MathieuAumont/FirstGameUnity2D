@@ -27,8 +27,11 @@ public class LSPlayer : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, currentPoint.transform.position, moveSpeed * Time.deltaTime);
         if (Vector3.Distance(transform.position, currentPoint.transform.position) < .1f && !levelLoading)
         {
-
-
+            if (currentPoint.isLevel)
+            {
+                LSUIController.instance.ShowInfo(currentPoint);
+            }
+           
             if (Input.GetAxisRaw("Horizontal") > .5f)
             {
                 if (currentPoint.right != null)
@@ -57,8 +60,9 @@ public class LSPlayer : MonoBehaviour
                     SetNextPoint(currentPoint.down);
                 }
             }
-            if ( currentPoint.levelToLoad != "" && currentPoint.isLevel)
+            if ( currentPoint.levelToLoad != "" && currentPoint.isLevel && !currentPoint.isLocked)
             {
+               // LSUIController.instance.ShowInfo(currentPoint);
                 if(Input.GetButtonDown("Jump"))
                 {
                     levelLoading = true;
@@ -69,6 +73,8 @@ public class LSPlayer : MonoBehaviour
     }
     public void SetNextPoint(LevelSelect nextPoint)
     {
+
         currentPoint = nextPoint;
+        LSUIController.instance.HideInfo();
     }
 }
